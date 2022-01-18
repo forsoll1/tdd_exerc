@@ -24,7 +24,7 @@ export class Board {
   }
 
   drop(blockObj) {
-    if (this.checkFalling()){
+    if (this.hasFalling()){
       throw "already falling"
     }
     this.blockList.push(blockObj)
@@ -42,7 +42,12 @@ export class Board {
       boardLines.push(".".repeat(this.width))
     }
     for (const blockObj of this.blockList) {
-      blockObj.yPos += 1
+      if (blockObj.yPos == this.height - 1){
+        blockObj.falling = false
+      }else{
+        blockObj.yPos += 1
+      }
+
     }
     for (const blockObj of this.blockList) {
       boardLines[blockObj.yPos] = boardLines[blockObj.yPos].substring(0, blockObj.xPos) + blockObj.color + boardLines[blockObj.yPos].substring(blockObj.xPos + 1,)
@@ -54,7 +59,7 @@ export class Board {
     this.board = newBoard
   }
 
-  checkFalling(){
+  hasFalling(){
     for (const blockObj of this.blockList) {
       if (blockObj.falling){
         return true
