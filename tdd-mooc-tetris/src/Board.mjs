@@ -3,7 +3,7 @@ import { Block } from "../src/Block.mjs";
 export class Board {
   width;
   height;
-  board = ""
+  board = []
   blockList = []
 
   constructor(width, height) {
@@ -14,12 +14,8 @@ export class Board {
   }
 
   initBoard() {
-    var line = ""
-    for (let i = 0; i < this.width; i++) {
-      line += "." 
-    }
-    for (var i = 0; i < this.height; i++) {
-      this.board += line + "\n"
+    for (let i = 0; i < this.height; i++) {
+      this.board.push(".".repeat(this.width))
     }
   }
 
@@ -31,9 +27,7 @@ export class Board {
     var xPosition = Math.floor(this.width/2)
     blockObj.xPos = xPosition
 
-    var start = ".".repeat(xPosition) + blockObj.toString()
-    var newBoard = start + this.board.substring(Math.floor(this.width/2) + 1,)
-    this.board = newBoard
+    this.board[0] = this.board[blockObj.yPos].substring(0, blockObj.xPos) + blockObj.color + this.board[blockObj.yPos].substring(blockObj.xPos + 1,)
   }
 
   tick(){
@@ -42,9 +36,12 @@ export class Board {
       boardLines.push(".".repeat(this.width))
     }
     for (const blockObj of this.blockList) {
-      if (blockObj.yPos == this.height - 1){
+      if (blockObj.falling && blockObj.yPos == this.height - 1){
         blockObj.falling = false
-      }else{
+      }else if(blockObj.falling && this.board[blockObj.yPos + 1].charAt(blockObj.xPos) != "."){
+        blockObj.falling = false        
+      }else if (blockObj.falling){
+        console.log(boardLines[blockObj.yPos + 1].charAt(blockObj.xPos))
         blockObj.yPos += 1
       }
 
@@ -52,11 +49,8 @@ export class Board {
     for (const blockObj of this.blockList) {
       boardLines[blockObj.yPos] = boardLines[blockObj.yPos].substring(0, blockObj.xPos) + blockObj.color + boardLines[blockObj.yPos].substring(blockObj.xPos + 1,)
     }
-    var newBoard = ""
-    for (const line of boardLines) {
-      newBoard += line + "\n"
-    }
-    this.board = newBoard
+
+    this.board = boardLines
   }
 
   hasFalling(){
@@ -69,6 +63,10 @@ export class Board {
   }
 
   toString() {
-    return this.board;
+    var boardString = ""
+    for (const line of this.board) {
+      boardString += line + "\n"
+    }
+    return boardString;
   }
 }
