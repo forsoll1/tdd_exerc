@@ -1,3 +1,5 @@
+// LEVEL 1 = Took 3,5 hours
+
 import { Block } from "../src/Block.mjs";
 
 export class Board {
