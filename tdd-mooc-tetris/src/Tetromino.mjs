@@ -8,7 +8,10 @@ const Tetromino = {
                                 .....
                                 IIII.
                                 .....
-                                .....`, "I")
+                                .....`, "I"),
+    O_SHAPE : new RotatingShape(`.OO
+                                .OO
+                                ...`, "O")
 
 }
 

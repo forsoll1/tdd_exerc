@@ -24,6 +24,10 @@ export class RotatingShape{
                         IIII.
                         .....
                         .....`
+        }else if(this.name == "O"){
+            return new RotatingShape(`.OO
+                                    .OO
+                                    ...`, this.name)
         }
         else if (this.shape.length == 12){
             var trimShape = this.shape.replace(/\s/g, "")
@@ -57,6 +61,10 @@ export class RotatingShape{
                         IIII.
                         .....
                         .....`
+        }else if(this.name == "O"){
+            return new RotatingShape(`.OO
+                                    .OO
+                                    ...`, this.name)
         }
         else if (this.shape.length == 12){
             var trimShape = this.shape.replace(/\s/g, "")
