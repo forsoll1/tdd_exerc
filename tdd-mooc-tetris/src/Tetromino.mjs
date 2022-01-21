@@ -1,3 +1,5 @@
+// Tetromin - 1 h
+
 import { RotatingShape } from "./RotatingShape.mjs"
 
 const Tetromino = {
