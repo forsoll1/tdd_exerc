@@ -4,10 +4,14 @@ export class RotatingShape{
 
     shape;
     name;
+    falling;
+    yPos;
 
     constructor(newShape, name){
         this.shape = newShape.split(" ").join("") + "\n" 
         this.name = name
+        this.falling = true
+        this.yPos = 0
     }
 
     rotateRight(){

@@ -1,6 +1,5 @@
 // LEVEL 1 = Took 3,5 hours
 
-import { Block } from "../src/Block.mjs";
 
 export class Board {
   width;
@@ -12,13 +11,15 @@ export class Board {
     this.width = width;
     this.height = height;
 
-    this.initBoard();
+    this.board = this.initBoard();
   }
 
   initBoard() {
+    var newBoard = []
     for (let i = 0; i < this.height; i++) {
-      this.board.push(".".repeat(this.width))
+      newBoard.push(".".repeat(this.width))
     }
+    return newBoard
   }
 
   drop(blockObj) {
@@ -26,30 +27,33 @@ export class Board {
       throw "already falling"
     }
     this.blockList.push(blockObj)
-    var xPosition = Math.floor(this.width/2)
-    blockObj.xPos = xPosition
-
-    this.board[0] = this.board[blockObj.yPos].substring(0, blockObj.xPos) + blockObj.color + this.board[blockObj.yPos].substring(blockObj.xPos + 1,)
+    var blockObjLineByLine = blockObj.shape.split("\n")
+    var distanceToLeftBorder = Math.floor((this.width - blockObjLineByLine[0].length) / 2)
+    for (let i = 0; i < blockObjLineByLine.length; i++){
+      this.board[i] = this.board[i].substring(0,distanceToLeftBorder) + blockObjLineByLine[i] + this.board[i].substring(distanceToLeftBorder + blockObjLineByLine[i].length,)
+    }
+    if (blockObj.xPos){
+      var xPosition = Math.floor(this.width/2)
+      blockObj.xPos = xPosition
+    }
   }
 
   tick(){
-    var boardLines = []
-    for (let i = 0; i < this.height; i++) {
-      boardLines.push(".".repeat(this.width))
-    }
+    var boardLines = this.initBoard()
+
     for (const blockObj of this.blockList) {
+
       if (blockObj.falling && blockObj.yPos == this.height - 1){
         blockObj.falling = false
       }else if(blockObj.falling && this.board[blockObj.yPos + 1].charAt(blockObj.xPos) != "."){
         blockObj.falling = false        
       }else if (blockObj.falling){
-        console.log(boardLines[blockObj.yPos + 1].charAt(blockObj.xPos))
         blockObj.yPos += 1
       }
 
     }
     for (const blockObj of this.blockList) {
-      boardLines[blockObj.yPos] = boardLines[blockObj.yPos].substring(0, blockObj.xPos) + blockObj.color + boardLines[blockObj.yPos].substring(blockObj.xPos + 1,)
+      boardLines[blockObj.yPos] = boardLines[blockObj.yPos].substring(0, blockObj.xPos) + blockObj.shape + boardLines[blockObj.yPos].substring(blockObj.xPos + 1,)
     }
 
     this.board = boardLines

@@ -1,11 +1,11 @@
 export class Block {
-  color;
-  xPos;
+  shape;
+  xPos = 1;
   yPos;
   falling;
 
-  constructor(color) {
-    this.color = color;
+  constructor(shape) {
+    this.shape = shape;
     this.yPos = 0;
     this.falling = true;
   }
