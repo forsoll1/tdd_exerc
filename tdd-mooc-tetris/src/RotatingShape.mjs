@@ -1,17 +1,20 @@
 // Rotatingshape - 3h
 
 export class RotatingShape{
-
+/*
     shape;
     name;
     falling;
     yPos;
-
+    xPos;
+*/
     constructor(newShape, name){
         this.shape = newShape.split(" ").join("") + "\n" 
         this.name = name
         this.falling = true
         this.yPos = 0
+        this.xPos;
+        this.test1;
     }
 
     rotateRight(){
