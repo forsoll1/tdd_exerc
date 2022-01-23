@@ -37,20 +37,17 @@ export class Board {
       blockObj = blockObjTemp
     }else{
       blockObj = new RotatingShape(blockObjTemp.shape, blockObjTemp.name)    
-
     }
-
-    this.blockList.push(blockObj)
 
     var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
     var distanceToLeftBorder = Math.floor((this.width - blockObjLineByLine[0].length) / 2)
-    for (let i = 0; i < blockObjLineByLine.length; i++){
-      this.board[i] = this.board[i].substring(0,distanceToLeftBorder) + blockObjLineByLine[i] + this.board[i].substring(distanceToLeftBorder + blockObjLineByLine[i].length,)
-    }
+    this.blockList.push(blockObj)
+
     blockObj.xPos = distanceToLeftBorder
-    if(this.blockList.length == 1){
-      blockObj.test1 = "HELLOO"
-    }
+    this.drawBoard()
+
+    console.log('DROP')
+    console.log(this.toString())
   }
 
   tick(){
@@ -79,6 +76,62 @@ export class Board {
         }   
       }
     this.board = boardLines
+    
+    console.log('TICK')
+    console.log(this.toString())
+  }
+
+  drawBoard(){
+    var boardLines = this.initBoard()
+
+    for (const blockObj of this.blockList) {
+      var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
+      var counter = blockObj.yPos
+        for (const blockLine of blockObjLineByLine) {
+          if (counter < this.height && blockLine != ".".repeat(blockLine.length) ){
+            boardLines[counter] = boardLines[counter].substring(0, blockObj.xPos) + blockLine + boardLines[counter].substring(blockObj.xPos + blockObjLineByLine[0].length,)
+            counter += 1            
+          }
+        }   
+      }
+    this.board = boardLines
+    console.log('DRAWBOARD')
+    console.log(this.toString())
+
+
+  }
+
+  moveLeft(){
+    var blockObj = this.getFallingBlockObj()
+    if (blockObj){
+      blockObj.xPos -= 1
+    }
+    this.drawBoard()
+
+    console.log('moveLeft')
+    console.log(this.toString())
+  }
+
+  moveRight(){
+    var blockObj = this.getFallingBlockObj()
+    if (blockObj){
+      blockObj.xPos += 1
+    }
+    this.drawBoard()
+
+    console.log('moveRight')
+    console.log(this.toString())
+  }
+  
+  moveDown(){
+    var blockObj = this.getFallingBlockObj()
+    if (blockObj){
+      blockObj.yPos += 1
+    }
+    this.drawBoard()
+
+    console.log('moveRight')
+    console.log(this.toString())
   }
 
   hasFalling(){
@@ -88,6 +141,17 @@ export class Board {
       }
     }
     return false
+  }
+
+  getFallingBlockObj(){
+    var blockObj;
+    for (const obj of this.blockList) {
+      if (obj.falling){
+        blockObj = obj
+        return blockObj
+      }
+    }
+    return null
   }
 
   toString() {
