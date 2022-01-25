@@ -3,7 +3,6 @@
 
 import { Block } from "./Block.mjs";
 import { RotatingShape } from "./RotatingShape.mjs";
-import { Tetromino } from "./Tetromino.mjs";
 
 
 export class Board {
@@ -45,93 +44,74 @@ export class Board {
 
     blockObj.xPos = distanceToLeftBorder
     this.drawBoard()
-
-    console.log('DROP')
-    console.log(this.toString())
   }
 
   tick(){
-    var boardLines = this.initBoard()
+    var blockObj = this.getFallingBlockObj()
 
-    for (const blockObj of this.blockList) {
-
-      var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
-      if (blockObj.falling && this.shapeReachesBottom(blockObj, blockObjLineByLine)){
-        blockObj.falling = false
-      }else if(blockObj.falling && this.nextTickWouldLeadToCollision(blockObj, blockObjLineByLine)){
-        blockObj.falling = false        
-      }else if (blockObj.falling){
+    if (blockObj){
+      if (blockObj.falling && this.blockCanMoveDown(blockObj)) {
         blockObj.yPos += 1
-      }
+      }else{
+        blockObj.falling = false
+      }     
     }
-
-    for (const blockObj of this.blockList) {
-      var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
-      var counter = blockObj.yPos
-        for (const blockLine of blockObjLineByLine) {
-          if (counter < this.height && blockLine != ".".repeat(blockLine.length) ){
-            boardLines[counter] = boardLines[counter].substring(0, blockObj.xPos) + blockLine + boardLines[counter].substring(blockObj.xPos + blockObjLineByLine[0].length,)
-            counter += 1            
-          }
-        }   
-      }
-    this.board = boardLines
-    
-    console.log('TICK')
-    console.log(this.toString())
+    this.drawBoard()
   }
 
   drawBoard(){
-    var boardLines = this.initBoard()
+    var allBlockPoints = []
+    var boardLines = []
 
     for (const blockObj of this.blockList) {
       var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
-      var counter = blockObj.yPos
-        for (const blockLine of blockObjLineByLine) {
-          if (counter < this.height && blockLine != ".".repeat(blockLine.length) ){
-            boardLines[counter] = boardLines[counter].substring(0, blockObj.xPos) + blockLine + boardLines[counter].substring(blockObj.xPos + blockObjLineByLine[0].length,)
-            counter += 1            
-          }
-        }   
+      var blockPoints = this.getReservedPoints(blockObjLineByLine)
+      var symbol = blockObjLineByLine[blockPoints[0].y][blockPoints[0].x]
+      for (const point of blockPoints) {
+        point.x = point.x + blockObj.xPos
+        point.y = point.y + blockObj.yPos
+        point.symbol = symbol
+        allBlockPoints.push(point)
       }
+    }
+    for(let y = 0; y < this.height; y++){
+      var line = ""
+      for(let x = 0; x < this.width; x++){
+        var drawSymbol = "."
+        for (const point of allBlockPoints) {
+          if (point.x == x && point.y == y){
+            drawSymbol = point.symbol
+          }
+        }
+        line += drawSymbol
+      }
+      boardLines[y] = line
+    }
     this.board = boardLines
-    console.log('DRAWBOARD')
-    console.log(this.toString())
-
-
   }
 
   moveLeft(){
     var blockObj = this.getFallingBlockObj()
-    if (blockObj){
+    if (blockObj && this.blockCanMoveLeft(blockObj)){
       blockObj.xPos -= 1
     }
     this.drawBoard()
-
-    console.log('moveLeft')
-    console.log(this.toString())
   }
 
   moveRight(){
     var blockObj = this.getFallingBlockObj()
-    if (blockObj){
+    if (blockObj && this.blockCanMoveRight(blockObj)){
       blockObj.xPos += 1
     }
     this.drawBoard()
-
-    console.log('moveRight')
-    console.log(this.toString())
   }
   
   moveDown(){
     var blockObj = this.getFallingBlockObj()
     if (blockObj){
-      blockObj.yPos += 1
+      this.tick()
     }
     this.drawBoard()
-
-    console.log('moveRight')
-    console.log(this.toString())
   }
 
   hasFalling(){
@@ -162,46 +142,95 @@ export class Board {
     return boardString;
   }
 
-  shapeReachesBottom(blockObj, blockObjLineByLine){
-    var lineNum = 0;
-    for (let i = blockObjLineByLine.length-1; i > -1; i--){
-      for (const char of blockObjLineByLine[i]) {
-        if (char != "."){
-          lineNum = i
-          break
+  blockCanMoveDown(blockObj){
+    var blockPointsOnBoard = this.getBlockPoints(blockObj)
+    var reservedPointsBoard = this.getReservedPoints(this.board)
+    var oldPoints = this.filterDuplicatePoints(reservedPointsBoard, blockPointsOnBoard)
+
+    for (const blockPoint of blockPointsOnBoard) {
+      if (blockPoint.y + 1 == this.height){
+        return false
+      }
+      for (const boardPoint of oldPoints) {
+        if (blockPoint.x == boardPoint.x && blockPoint.y + 1 == boardPoint.y){
+          return false
         }        
       }
     }
-    if (blockObj.yPos + lineNum + 1 == this.height){
-      return true
-    }
-    return false
+    return true
   }
 
-  nextTickWouldLeadToCollision(blockObj, blockObjLineByLine){
+  blockCanMoveRight(blockObj){
+    var blockPointsOnBoard = this.getBlockPoints(blockObj)
+    var reservedPointsBoard = this.getReservedPoints(this.board)
+    var oldPoints = this.filterDuplicatePoints(reservedPointsBoard, blockPointsOnBoard)
 
-    var hasBlock = 0
-    var didChange = false
-    for (let i = blockObjLineByLine.length - 1; i > -1; i--){
-      if(blockObjLineByLine[i] != ".".repeat(blockObjLineByLine[i].length)){
-        hasBlock = i
-        didChange = true
-        break
-      }else{
-        blockObjLineByLine.splice(i)
+    for (const blockPoint of blockPointsOnBoard) {
+      if (blockPoint.x + 1 == this.width){
+        return false
+      }
+      for (const boardPoint of oldPoints) {
+        if (blockPoint.x + 1 == boardPoint.x && blockPoint.y == boardPoint.y){
+          return false
+        }        
       }
     }
-    if(blockObj.yPos + hasBlock == this.height -1){
-      return true
-    }
+    return true
+  }
+  
 
+  blockCanMoveLeft(blockObj){
+    var blockPointsOnBoard = this.getBlockPoints(blockObj)
+    var reservedPointsBoard = this.getReservedPoints(this.board)
+    var oldPoints = this.filterDuplicatePoints(reservedPointsBoard, blockPointsOnBoard)
 
-    for(let i = 0; i < blockObjLineByLine[0].length; i++){
-      if (blockObjLineByLine[hasBlock][i] != "." && this.board[blockObj.yPos + hasBlock + 1][blockObj.xPos + i] != "."){
-        return true
+    for (const blockPoint of blockPointsOnBoard) {
+      if (blockPoint.x - 1 < 0){
+        return false
+      }
+      for (const boardPoint of oldPoints) {
+        if (blockPoint.x - 1 == boardPoint.x && blockPoint.y == boardPoint.y){
+          return false
+        }        
       }
     }
+    return true
+  }
 
-    return false
+  filterDuplicatePoints(allPoints, removeThesePoints){
+    var result = allPoints.filter(function(point){
+      return !removeThesePoints.find(function(removePoint){
+        return removePoint.x == point.x && removePoint.y == point.y
+      })
+    })
+    return result
+  }
+
+  getBlockPoints(blockObj){
+    var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
+
+    var blockPoints = this.getReservedPoints(blockObjLineByLine)
+    var blockPointsOnBoard = []
+    for (const point of blockPoints) {
+      point.x += blockObj.xPos
+      point.y += blockObj.yPos
+      blockPointsOnBoard.push(point)
+    }
+
+    return blockPointsOnBoard
+  }
+
+  getReservedPoints(lineArray){
+    var reservedPoints = []
+
+    for (let x = 0; x < lineArray[0].length; x++) {
+      for (let y = 0; y < lineArray.length; y++) {
+        if(lineArray[y][x] != "."){
+          const reservedPoint = {x:x , y:y}
+          reservedPoints.push(reservedPoint)
+        }
+      }
+    }
+    return reservedPoints
   }
 }

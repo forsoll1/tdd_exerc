@@ -43,7 +43,58 @@ describe("Moving tetrominoes", () => {
     );
   });
 
-  it("falling tetromino moves one step right", () => {
+  it("tetromino cannot move right beyond border", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+
+    expect(board.toString()).to.equalShape(
+      `........T.
+       .......TTT
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  it("tetromino cannot move left through another block", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    fallToBottom(board)
+    board.drop(Tetromino.T_SHAPE);
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    fallToBottom(board)
+    board.drop(Tetromino.T_SHAPE);
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    fallToBottom(board)
+    board.drop(Tetromino.T_SHAPE);
+    board.moveRight();
+    board.moveRight();
+
+    expect(board.toString()).to.equalShape(
+      `.....T..T.
+       ....TTTTTT
+       ........T.
+       .......TTT
+       ........T.
+       .......TTT`
+    );
+  });
+
+  it("falling tetromino moves one step down", () => {
     board.drop(Tetromino.T_SHAPE);
     board.moveDown();
 
@@ -56,6 +107,71 @@ describe("Moving tetrominoes", () => {
        ..........`
     );
   });
+
+  it("tetromino cannot move down after hitting bottom", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.moveDown();
+    board.moveDown();
+    board.moveDown();
+    board.moveDown();
+    board.moveDown();
+
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ..........
+       ..........
+       ....T.....
+       ...TTT....`
+    );
+  });
+
+  it("tetromino cannot move left beyond border", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+
+    expect(board.toString()).to.equalShape(
+      `.T........
+       TTT.......
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  it("tetromino cannot move left through another block", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board)
+    board.drop(Tetromino.T_SHAPE);
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board)
+    board.drop(Tetromino.T_SHAPE);
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board)
+    board.drop(Tetromino.T_SHAPE);
+    board.moveLeft();
+
+    expect(board.toString()).to.equalShape(
+      `.T..T.....
+       TTTTTT....
+       .T........
+       TTT.......
+       .T........
+       TTT.......`
+    );
+  });
+  
 
   xit("", () => {
     
