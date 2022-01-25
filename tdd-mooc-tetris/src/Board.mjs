@@ -233,4 +233,24 @@ export class Board {
     }
     return reservedPoints
   }
+
+  boardRotateLeft(){
+    var blockObj = this.getFallingBlockObj()
+
+    if(blockObj){
+      var rotatedShape = blockObj.rotateLeft()
+      blockObj.shape = rotatedShape.shape
+    }
+    this.drawBoard()
+  }
+
+  boardRotateRight(){
+    var blockObj = this.getFallingBlockObj()
+
+    if(blockObj){
+      var rotatedShape = blockObj.rotateRight()
+      blockObj.shape = rotatedShape.shape
+    }
+    this.drawBoard()
+  }
 }

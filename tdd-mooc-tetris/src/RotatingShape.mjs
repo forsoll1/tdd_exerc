@@ -1,13 +1,7 @@
 // Rotatingshape - 3h
 
 export class RotatingShape{
-/*
-    shape;
-    name;
-    falling;
-    yPos;
-    xPos;
-*/
+
     constructor(newShape, name){
         this.shape = newShape.split(" ").join("") + "\n" 
         this.name = name
@@ -37,7 +31,7 @@ export class RotatingShape{
                                     .OO
                                     ...`, this.name)
         }
-        else if (this.shape.length == 12){
+        else if (this.shape.length <= 13){
             var trimShape = this.shape.replace(/\s/g, "")
             newString = trimShape[6] + trimShape[3] + trimShape[0] + "\n" +
                             trimShape[7] + trimShape[4] + trimShape[1] + "\n" +
@@ -74,7 +68,7 @@ export class RotatingShape{
                                     .OO
                                     ...`, this.name)
         }
-        else if (this.shape.length == 12){
+        else if (this.shape.length <= 13){
             var trimShape = this.shape.replace(/\s/g, "")
             newString = trimShape[2] + trimShape[5] + trimShape[8] + "\n" +
                             trimShape[1] + trimShape[4] + trimShape[7] + "\n" +
