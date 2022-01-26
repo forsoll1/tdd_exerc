@@ -45,6 +45,45 @@ describe("Falling ROTATING tetrominoes", () => {
     );
   });
 
+  it("kicks out if something on left blocks rotation", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.boardRotateRight()
+    board.moveLeft()
+    board.moveLeft()
+    board.moveLeft()
+    board.moveLeft()
+    board.boardRotateLeft()
+
+    expect(board.toString()).to.equalShape(
+      `.T........
+       TTT.......
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  it("kicks out if something on right blocks rotation", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.boardRotateLeft()
+    board.moveRight()
+    board.moveRight()
+    board.moveRight()
+    board.moveRight()
+    board.moveRight()
+    board.boardRotateRight()
+
+    expect(board.toString()).to.equalShape(
+      `........T.
+       .......TTT
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
   xit("", () => {
   });
 });

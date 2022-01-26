@@ -111,7 +111,6 @@ export class Board {
     if (blockObj){
       this.tick()
     }
-    this.drawBoard()
   }
 
   hasFalling(){
@@ -237,20 +236,88 @@ export class Board {
   boardRotateLeft(){
     var blockObj = this.getFallingBlockObj()
 
-    if(blockObj){
-      var rotatedShape = blockObj.rotateLeft()
-      blockObj.shape = rotatedShape.shape
+    var tempObj = blockObj.rotateLeft()
+    var rotatedBlockObj = blockObj
+    rotatedBlockObj.shape = tempObj.shape
+
+    if (blockObj){
+      var rotatableBlock = this.hasSpaceToRotate(blockObj, rotatedBlockObj)     
+    }else{
+      return
+    }
+    if(rotatableBlock){
+      blockObj.xPos = rotatableBlock.xPos
+    }else{
+      return
     }
     this.drawBoard()
   }
 
   boardRotateRight(){
     var blockObj = this.getFallingBlockObj()
+    var tempObj = blockObj.rotateRight()
+    var rotatedBlockObj = blockObj
+    rotatedBlockObj.shape = tempObj.shape
 
-    if(blockObj){
-      var rotatedShape = blockObj.rotateRight()
-      blockObj.shape = rotatedShape.shape
+    if (blockObj){
+      var rotatableBlock = this.hasSpaceToRotate(blockObj, rotatedBlockObj)     
+    }else{
+      return
+    }
+    if(rotatableBlock){
+      blockObj.xPos = rotatableBlock.xPos
+    }else{
+      return
     }
     this.drawBoard()
+  }
+
+  hasSpaceToRotate(blockObj, rotatedBlock){
+    var blockPointsOnBoard = this.getBlockPoints(rotatedBlock)
+    var reservedPointsBoard = this.getReservedPoints(this.board)
+    var oldPoints = this.filterDuplicatePoints(reservedPointsBoard, blockPointsOnBoard)
+
+    if (this.rotatedObjFits(blockPointsOnBoard, oldPoints)){
+      return blockObj
+    }
+
+    var testPointsOffsetRight = []
+    for (const point of this.getBlockPoints(rotatedBlock)) {
+      point.x += 1
+      testPointsOffsetRight.push(point)
+    }
+    if (this.rotatedObjFits(testPointsOffsetRight, oldPoints)){
+      blockObj.xPos += 1
+      return blockObj
+    }
+
+    var testPointsOffsetLeft = []
+    for (const point of this.getBlockPoints(rotatedBlock)) {
+      point.x -= 1
+      testPointsOffsetLeft.push(point)
+    }
+
+    if (this.rotatedObjFits(testPointsOffsetLeft, oldPoints)){
+      blockObj.xPos -= 1
+      return blockObj
+    }
+    return null
+  }
+  
+  rotatedObjFits(blockPointsOnBoard, oldPoints){
+    for (const point of blockPointsOnBoard) {
+      if (point.x < 0 || point.x >= this.width || point.y < 0 || point.y >= this.height ){
+        return false
+      }
+    }
+
+    for (const boardPoint of oldPoints) {
+      for (const blockPoint of blockPointsOnBoard) {
+        if (boardPoint.x == blockPoint.x && boardPoint.y == blockPoint.y){
+          return false
+        }
+      }
+    }
+    return true
   }
 }
