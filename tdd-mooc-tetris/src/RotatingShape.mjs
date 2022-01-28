@@ -2,13 +2,12 @@
 
 export class RotatingShape{
 
-    constructor(newShape, name){
+    constructor(newShape, name, yPos = 0, xPos = null){
         this.shape = newShape.split(" ").join("") + "\n" 
         this.name = name
         this.falling = true
-        this.yPos = 0
-        this.xPos;
-        this.test1;
+        this.yPos = yPos
+        this.xPos = xPos
     }
 
     rotateRight(){
@@ -29,7 +28,7 @@ export class RotatingShape{
         }else if(this.name == "O"){
             return new RotatingShape(`.OO
                                     .OO
-                                    ...`, this.name)
+                                    ...`, this.name, this.yPos, this.xPos)
         }
         else if (this.shape.length <= 13){
             var trimShape = this.shape.replace(/\s/g, "")
@@ -45,7 +44,7 @@ export class RotatingShape{
                             tS[24] + tS[19] + tS[14] + tS[9] + tS[4];
         }
 
-        return new RotatingShape(newString, this.name)  
+        return new RotatingShape(newString, this.name, this.yPos, this.xPos)  
     }
 
     rotateLeft(){
@@ -66,7 +65,7 @@ export class RotatingShape{
         }else if(this.name == "O"){
             return new RotatingShape(`.OO
                                     .OO
-                                    ...`, this.name)
+                                    ...`, this.name, this.yPos, this.xPos)
         }
         else if (this.shape.length <= 13){
             var trimShape = this.shape.replace(/\s/g, "")
@@ -81,7 +80,7 @@ export class RotatingShape{
                             tS[1] + tS[6] + tS[11] + tS[16] + tS[21] +  "\n" +
                             tS[0] + tS[5] + tS[10] + tS[15] + tS[20];
         }
-        return new RotatingShape(newString, this.name)
+        return new RotatingShape(newString, this.name, this.yPos, this.xPos)
     }
     toString(){
         return this.shape;
