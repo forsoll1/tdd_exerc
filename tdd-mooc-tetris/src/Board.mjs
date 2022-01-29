@@ -235,9 +235,9 @@ export class Board {
 
   boardRotateLeft(){
     var blockObj = this.getFallingBlockObj()
-    var tempObj = blockObj.rotateLeft()
 
     if (blockObj && blockObj.name != "O"){
+      var tempObj = blockObj.rotateLeft()
       var rotatableBlock = this.hasSpaceToRotate(blockObj, tempObj)     
     }else{
       return
@@ -253,9 +253,9 @@ export class Board {
 
   boardRotateRight(){
     var blockObj = this.getFallingBlockObj()
-    var tempObj = blockObj.rotateRight()
 
     if (blockObj && blockObj.name != "O"){
+      var tempObj = blockObj.rotateRight()
       var rotatableBlock = this.hasSpaceToRotate(blockObj, tempObj)     
     }else{
       return

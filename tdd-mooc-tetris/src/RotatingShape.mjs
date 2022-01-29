@@ -2,95 +2,37 @@
 
 export class RotatingShape{
 
-    constructor(newShape, name, yPos = 0, xPos = null){
-        this.shape = newShape.split(" ").join("") + "\n" 
+    constructor(newShape, name, yPos = -1, xPos = null){
+        this.shape = newShape
         this.name = name
         this.falling = true
         this.yPos = yPos
         this.xPos = xPos
     }
     blockShapes = {
-        T_0 :  `....
-                TTT.
-                .T..
-                ....`,
-        T_1 :  `.T..
-                TT..
-                .T..
-                ....`,
-        T_2 :  `....
-                .T..
-                TTT.
-                ....
-                ....`,
-        T_3 :  `.T..
-                .TT.
-                .T..
-                ....`,
-        I_0 :  `....
-                IIII
-                ....
-                ....`,
-        I_1 :  `..I.
-                ..I.
-                ..I.
-                ..I.`,
-        L_0 :  `....
-                LLL.
-                L...
-                ....`,
-        L_1 :  `LL..
-                .L..
-                .L..
-                ....`,
-        L_2 :  `....
-                ..L.
-                LLL.
-                ....`,
-        L_3 :  `.L..
-                .L..
-                .LL.
-                ....`,
-        J_0 :  `....
-                JJJ.
-                ..J.
-                ....`,
-        J_1 :  `.J..
-                .J..
-                JJ..
-                ....`,
-        J_2 :  `....
-                J...
-                JJJ.
-                ....`,
-        J_3 :  `.JJ.
-                .J..
-                .J..
-                ....`,
-        S_0 :  `....
-                .SS.
-                SS..
-                ....`,
-        S_1 :  `S...
-                SS..
-                .S..
-                ....`,
-        Z_0 :  `....
-                ZZ..
-                .ZZ.
-                ....`,
-        Z_1 :  `..Z.
-                .ZZ.
-                .Z..
-                ....`,
-        O_0 : `....
-                .OO.
-                .OO.
-                ....`
+        T_0 :  `....\nTTT.\n.T..\n....\n`,
+        T_1 :  `.T..\nTT..\n.T..\n....\n`,
+        T_2 :  `....\n.T..\nTTT.\n....\n`,
+        T_3 :  `.T..\n.TT.\n.T..\n....\n`,
+        I_0 :  `....\nIIII\n....\n....\n`,
+        I_1 :  `..I.\n..I.\n..I.\n..I.\n`,
+        L_0 :  `....\nLLL.\nL...\n....\n`,
+        L_1 :  `LL..\n.L..\n.L..\n....\n`,
+        L_2 :  `....\n..L.\nLLL.\n....\n`,
+        L_3 :  `.L..\n.L..\n.LL.\n....\n`,
+        J_0 :  `....\nJJJ.\n..J.\n....\n`,
+        J_1 :  `.J..\n.J..\nJJ..\n....\n`,
+        J_2 :  `....\nJ...\nJJJ.\n....\n`,
+        J_3 :  `.JJ.\n.J..\n.J..\n....\n`,
+        S_0 :  `....\n.SS.\nSS..\n....\n`,
+        S_1 :  `S...\nSS..\n.S..\n....\n`,
+        Z_0 :  `....\nZZ..\n.ZZ.\n....\n`,
+        Z_1 :  `..Z.\n.ZZ.\n.Z..\n....\n`,
+        O_0 :  `....\n.OO.\n.OO.\n....\n`
     }
 
     rotateRight(){
-        var newString;
+        var newString = "";
         if(this.name == "I" && this.shape == this.blockShapes.I_0){
             newString = this.blockShapes.I_1
         }else if(this.name == "I" && this.shape == this.blockShapes.I_1){
@@ -147,7 +89,7 @@ export class RotatingShape{
     }
 
     rotateLeft(){
-        var newString;
+        var newString = "";
         if(this.name == "I" && this.shape == this.blockShapes.I_0){
             newString = this.blockShapes.I_1
         }else if(this.name == "I" && this.shape == this.blockShapes.I_1){
