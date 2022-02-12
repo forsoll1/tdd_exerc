@@ -9,6 +9,7 @@ export class Board {
   width;
   height;
   board = []
+  scoreBoard;
   blockList = []
 
   fallingBlock;
@@ -28,6 +29,10 @@ export class Board {
       newBoard.push(".".repeat(this.width))
     }
     return newBoard
+  }
+
+  addScoreBoard(scoreBoard){
+    this.scoreBoard = scoreBoard
   }
 
   drop(blockObjTemp) {
@@ -55,17 +60,20 @@ export class Board {
     var blockObj = this.fallingBlock
 
     if (blockObj){
-      if (blockObj.falling && this.blockCanMoveDown(blockObj)) {
+      if (this.blockCanMoveDown(blockObj)) {
         blockObj.yPos += 1
       }else{
         this.fallingBlock = null
-
         blockObj.falling = false
         var blockPoints = this.getBlockPoints(blockObj)
         for (const point of blockPoints) {
           this.boardPoints.push(point)
         }
-        this.checkIfLinesClear()
+        var yValues = this.returnYValuesOfLinesThatClear()
+        this.handleClear(yValues)
+        if(this.scoreBoard){
+          this.scoreBoard.countPoints(yValues)
+        }
       }     
     }
     this.drawBoard()
@@ -193,7 +201,7 @@ export class Board {
   getBlockPoints(blockObj){
     var blockObjLineByLine = blockObj.shape.split("\n").filter(Boolean)
 
-    var blockPoints = this.getReservedPoints(blockObjLineByLine)
+    var blockPoints = this.getReservedPointsAsPointObjects(blockObjLineByLine)
     var blockPointsOnBoard = []
     for (const point of blockPoints) {
       point.x += blockObj.xPos
@@ -204,7 +212,7 @@ export class Board {
     return blockPointsOnBoard
   }
 
-  getReservedPoints(lineArray){
+  getReservedPointsAsPointObjects(lineArray){
     var reservedPoints = []
 
     for (let x = 0; x < lineArray[0].length; x++) {
@@ -223,7 +231,7 @@ export class Board {
 
     if (blockObj && blockObj.name != "O"){
       var tempObj = blockObj.rotateLeft()
-      var rotatableBlock = this.hasSpaceToRotate(blockObj, tempObj)     
+      var rotatableBlock = this.hasSpaceToRotate(tempObj)     
     }else{
       return
     }
@@ -241,7 +249,7 @@ export class Board {
 
     if (blockObj && blockObj.name != "O"){
       var tempObj = blockObj.rotateRight()
-      var rotatableBlock = this.hasSpaceToRotate(blockObj, tempObj)     
+      var rotatableBlock = this.hasSpaceToRotate(tempObj)     
     }else{
       return
     }
@@ -254,7 +262,7 @@ export class Board {
     this.drawBoard()
   }
 
-  hasSpaceToRotate(blockObj, rotatedBlock){
+  hasSpaceToRotate(rotatedBlock){
     var rotatedBlockPointsOnBoard = this.getBlockPoints(rotatedBlock)
     var oldPoints = this.boardPoints
 
@@ -301,7 +309,8 @@ export class Board {
     }
     return true
   }
-  checkIfLinesClear(){
+  returnYValuesOfLinesThatClear(){
+    var yValues = []
     for (let y = 0; y < this.height; y++){
       var counter = 0
       for (const point of this.boardPoints) {
@@ -310,18 +319,21 @@ export class Board {
         }
       }
       if (counter == this.width){
-        this.handleClear(y)
+        yValues.push(y)
       }
-    }  
+    }
+    return yValues
   }
-  handleClear(yValue){
-    this.boardPoints = this.boardPoints.filter(function(point){
-      if(point.y != yValue && point.y > yValue){
-        return point
-      }else if (point.y < yValue){
-        point.y += 1
-        return point
-      }
-    })
+  handleClear(yValues){
+    for (const yValue of yValues) {
+      this.boardPoints = this.boardPoints.filter(function(point){
+        if(point.y != yValue && point.y > yValue){
+          return point
+        }else if (point.y < yValue){
+          point.y += 1
+          return point
+        }
+      })      
+    }
   }
 }
